@@ -17,6 +17,8 @@ distance_SEC = 7532/(sections+1)
 separation_SEC = 300
 
 with open("coordinate_points.csv", "w+") as f:
+    #writer = csv.DictWriter(f, fieldnames=["label", "x", "y"])
+    #writer.writeheader()
     writer = csv.writer(f)
 
     for i in range(machines):
