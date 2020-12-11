@@ -89,7 +89,6 @@ def joblistGenerator(robots, job_dict, machines, machine_dict, swabtimes_dict):
         done = len(swabtimes)
         num_empty = 0 
         while (num_empty < done):
-            #min_key = min(swabtimes,key=lambda key:min(swabtimes[key]))
             min_key, value = findminKey(swabtimes)
             
             time = swabtimes[min_key].pop(0)
@@ -148,7 +147,7 @@ def generateswabTimes(machines,intervals,offset):
     swabtimes_dict = {}
     midnight = datetime.timedelta(hours=24,minutes=0,seconds=0)
     for machine in range(1,machines+1):
-        # Machine goes from 1,..,4; lists are indexed at 0
+        # Machine goes from 1,2,..,4; lists are indexed at 0
         key = machine
         
         clocktime = string2Timedelta(offset[machine-1])

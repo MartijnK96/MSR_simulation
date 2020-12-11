@@ -279,7 +279,7 @@ def parseArgs():
     
     return args
 
-def Simulate(num_robots, robot_list, wallclock,outfile_name):
+def simulateRobots(num_robots, robot_list, wallclock,outfile_name):
     num_done = 0
     while (robot.job_list for robot in robot_list) and (num_done < num_robots):
         # Find robot with shortest remaining job duration, and the smallest remaining duration itself
@@ -376,7 +376,7 @@ if __name__ == '__main__':
         writer.writerow(["Wallclock", "Robot", "State", "Duration", "From", "To", "TotalDistance", "IdleTime", "TotalTime"])
 
     # Simulate all robots
-    Simulate(num_robots,robot_list,wallclock,outputfile) 
+    simulateRobots(num_robots,robot_list,wallclock,outputfile) 
     
     # Make pie charts of the results
     createPlots(outputfile, num_robots)            
