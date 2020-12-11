@@ -31,8 +31,8 @@ def parseArgs():
     parser.add_argument('-m','--machines', type=int, default=4, help='Number of machines.')
     parser.add_argument('-s','--sections', type=int, default=8, help='Number of sections per machine.')
     parser.add_argument('-ma','--machineassign', type=int, nargs='+', action='append', default= [[1,2], [3,4]], help='Assigment of robots to machines.')
-    parser.add_argument('-int','--swabinterval', nargs="+", default=['1:30:00','1:30:00','1:30:00','1:30:00'], help='Swabbing interval for each machine.')
-    parser.add_argument('-off','--swaboffset', nargs="+", default=['0:00:00','0:30:00','0:00:00','0:30:00'], help='Offset for each machine w.r.t. midnight.')
+    parser.add_argument('-int','--swabinterval', nargs="+", default=['1:30:00','1:30:00','1:00:00','1:00:00'], help='Swabbing interval for each machine.')
+    parser.add_argument('-off','--swaboffset', nargs="+", default=['0:00:00','0:45:00','0:00:00','0:30:00'], help='Offset for each machine w.r.t. midnight.')
     
     args = parser.parse_args()
     
@@ -89,10 +89,12 @@ def joblistGenerator(robots, job_dict, machines, machine_dict, swabtimes_dict):
         done = len(swabtimes)
         num_empty = 0 
         while (num_empty < done):
-            min_key = min(swabtimes,key=lambda key:min(swabtimes[key]))
+            #min_key = min(swabtimes,key=lambda key:min(swabtimes[key]))
+            min_key, value = findminKey(swabtimes)
+            
             time = swabtimes[min_key].pop(0)
             
-            lst.append([('Park',time)])
+            lst.append([('Park',str(time))])
             lst.append(job_dict[min_key][:])
             
             for machine in list(swabtimes.keys()): 
@@ -119,7 +121,7 @@ def creatmachineObj(machines,intervals,offset):
     for machine in range(0,machines):
         id = machine+1
         machine_list.append(Machine(id,offset[machine],intervals[machine]))
-                            
+
     return machine_list
 
 def generateMAdict(list):
@@ -153,9 +155,9 @@ def generateswabTimes(machines,intervals,offset):
         interval = string2Timedelta(intervals[machine-1])
         
         lst = []
-        lst.append(offset[machine-1])
+        lst.append(string2Timedelta(offset[machine-1]))
         while (clocktime + interval < midnight):
-            lst.append(str(clocktime+interval))
+            lst.append(clocktime+interval)
             
             clocktime += interval
             
@@ -163,6 +165,14 @@ def generateswabTimes(machines,intervals,offset):
         
     return swabtimes_dict
 
+def findminKey(dict):
+    key, value = (1,datetime.timedelta(hours=25))
+    for k, v in dict.items():
+        if min(v) < value:
+            key, value = k, v[0]
+               
+    return key, value 
+    
 def string2Timedelta(timestring):
     (h, m, s) = timestring.split(':')
     td = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
@@ -189,7 +199,7 @@ if __name__ == "__main__":
     
     # Generate dictionary with swabbing times for each machine
     swabtimes_dict = generateswabTimes(machines,intervals,offset)
-
+    
     # Generate dictionary with joblists for each MSR
     joblist_dict = joblistGenerator(robots, job_dict, machines, machine_assign, swabtimes_dict)
     

@@ -223,9 +223,7 @@ def locationdictfromCSV(coordinatefile_name):
     """
     
     project_dir = os.path.dirname(os.path.dirname((__file__)))
-    print(project_dir)
     relative_path = 'input/coordata/{}'.format(coordinatefile_name)
-    print(relative_path)
     coordinatefile = os.path.join(project_dir, relative_path)
     
     f = open(coordinatefile, 'r')
@@ -341,16 +339,14 @@ def createPlots(outfile_name, num_robots):
     robotname_list = ['MSR{}'.format(i) for i in range(1,num_robots+1)]
     df = pd.read_csv(outfile)
     
-    
     for idx, name in enumerate(robotname_list):
         state_sums = df[df.Robot == name].groupby('State')['Duration'].sum()
         plt.figure(idx)
         plt.title('MSR{}: time spent in states'.format(idx))
         plt.axis('equal');
         plt.pie(state_sums, labels=state_sums.index);
-        plt.show()
-    
-    exit()
+        
+    plt.show()
 
 if __name__ == '__main__':
     
